@@ -57,13 +57,13 @@ export function ChatArea() {
             }}
           />
           <h2 className="text-lg font-semibold text-foreground mb-2 animate-slideUp">
-            Start a conversation
+            Commencez une conversation
           </h2>
           <p
             className="text-sm text-foreground/60 animate-slideUp"
             style={{ animationDelay: "0.1s" }}
           >
-            Type a message below to begin
+            Tapez un message ci-dessous pour commencer
           </p>
         </div>
       </div>
