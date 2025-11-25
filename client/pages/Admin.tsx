@@ -892,6 +892,241 @@ export default function Admin() {
             </div>
           </>
         )}
+
+        {activeTab === "system" && (
+          <>
+            {/* System Management Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Ban Users */}
+              <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+                  <AlertCircle size={20} className="text-red-500" />
+                  Bannir un utilisateur
+                </h3>
+
+                <div className="space-y-4 mb-6">
+                  <div>
+                    <label className="block text-sm font-medium text-foreground/70 mb-2">
+                      Email de l'utilisateur
+                    </label>
+                    <input
+                      type="email"
+                      value={userEmailToBan}
+                      onChange={(e) => setUserEmailToBan(e.target.value)}
+                      className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-white/40"
+                      placeholder="user@example.com"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-foreground/70 mb-2">
+                      Raison du ban
+                    </label>
+                    <textarea
+                      value={banReason}
+                      onChange={(e) => setBanReason(e.target.value)}
+                      rows={3}
+                      className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-white/40 resize-none"
+                      placeholder="Entrez la raison..."
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-foreground/70 mb-2">
+                      Durée (minutes) - Laisser vide pour permanent
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      value={banDuration || ""}
+                      onChange={(e) =>
+                        setBanDuration(e.target.value ? parseInt(e.target.value, 10) : null)
+                      }
+                      className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-white/40"
+                      placeholder="ex: 1440 (24h)"
+                    />
+                  </div>
+
+                  <button
+                    onClick={handleBanUser}
+                    disabled={savingBan}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 disabled:opacity-50 text-red-200 font-semibold rounded-lg border border-red-500/50 transition-all"
+                  >
+                    <AlertCircle size={18} />
+                    {savingBan ? "Bannissement..." : "Bannir l'utilisateur"}
+                  </button>
+                </div>
+
+                {/* Active Bans */}
+                <div className="mt-6 pt-6 border-t border-white/10">
+                  <h4 className="text-sm font-semibold text-white mb-3">Utilisateurs bannis</h4>
+                  <div className="space-y-2 max-h-64 overflow-y-auto">
+                    {bans.length === 0 ? (
+                      <p className="text-xs text-foreground/50">Aucun ban actif</p>
+                    ) : (
+                      bans.map((ban) => (
+                        <div
+                          key={ban.id}
+                          className="bg-white/5 border border-red-500/20 rounded-lg p-3 flex justify-between items-start"
+                        >
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm text-white font-medium truncate">{ban.email}</p>
+                            <p className="text-xs text-red-400 truncate">{ban.reason}</p>
+                            {ban.expiresAt && (
+                              <p className="text-xs text-foreground/50 mt-1">
+                                Expire:{" "}
+                                {ban.expiresAt.toDate().toLocaleDateString("fr-FR", {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </p>
+                            )}
+                            {ban.isPermanent && (
+                              <p className="text-xs text-red-500 font-semibold mt-1">PERMANENT</p>
+                            )}
+                          </div>
+                          <button
+                            onClick={() => handleUnbanUser(ban.userId)}
+                            className="ml-2 text-xs px-2 py-1 rounded bg-white/10 hover:bg-white/20 text-foreground/70 hover:text-foreground transition-colors"
+                          >
+                            Débannir
+                          </button>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Maintenance Mode */}
+              <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+                  <Clock size={20} className="text-yellow-500" />
+                  Mode maintenance
+                </h3>
+
+                <div className="space-y-4 mb-6">
+                  <div>
+                    <label className="block text-sm font-medium text-foreground/70 mb-2">
+                      Titre
+                    </label>
+                    <input
+                      type="text"
+                      value={maintenanceTitle}
+                      onChange={(e) => setMaintenanceTitle(e.target.value)}
+                      className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-white/40"
+                      placeholder="ex: Mise à jour système"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-foreground/70 mb-2">
+                      Message
+                    </label>
+                    <textarea
+                      value={maintenanceMessage}
+                      onChange={(e) => setMaintenanceMessage(e.target.value)}
+                      rows={3}
+                      className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-white/40 resize-none"
+                      placeholder="Entrez le message de maintenance..."
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-foreground/70 mb-2">
+                      Durée (minutes)
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      value={maintenanceDuration}
+                      onChange={(e) => setMaintenanceDuration(parseInt(e.target.value, 10))}
+                      className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-white/40"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-foreground/70 mb-2">
+                      Sévérité
+                    </label>
+                    <select
+                      value={maintenanceSeverity}
+                      onChange={(e) =>
+                        setMaintenanceSeverity(e.target.value as "info" | "warning" | "critical")
+                      }
+                      className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-white/40"
+                    >
+                      <option value="info">Information</option>
+                      <option value="warning">Avertissement</option>
+                      <option value="critical">Critique (bloque l'app)</option>
+                    </select>
+                  </div>
+
+                  <button
+                    onClick={handleCreateMaintenance}
+                    disabled={savingMaintenance}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-yellow-500/20 hover:bg-yellow-500/30 disabled:opacity-50 text-yellow-200 font-semibold rounded-lg border border-yellow-500/50 transition-all"
+                  >
+                    <Clock size={18} />
+                    {savingMaintenance ? "Création..." : "Démarrer maintenance"}
+                  </button>
+                </div>
+
+                {/* Active Maintenance */}
+                <div className="mt-6 pt-6 border-t border-white/10">
+                  <h4 className="text-sm font-semibold text-white mb-3">
+                    Maintenances actives
+                  </h4>
+                  <div className="space-y-2 max-h-64 overflow-y-auto">
+                    {maintenanceNotices.filter((n) => n.isActive).length === 0 ? (
+                      <p className="text-xs text-foreground/50">Pas de maintenance en cours</p>
+                    ) : (
+                      maintenanceNotices
+                        .filter((n) => n.isActive)
+                        .map((notice) => (
+                          <div
+                            key={notice.id}
+                            className="bg-white/5 border border-yellow-500/20 rounded-lg p-3"
+                          >
+                            <div className="flex justify-between items-start">
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm text-white font-medium">{notice.title}</p>
+                                <p className="text-xs text-foreground/50 mt-1 truncate">
+                                  {notice.message}
+                                </p>
+                                <p
+                                  className={`text-xs font-semibold mt-2 ${
+                                    notice.severity === "critical"
+                                      ? "text-red-400"
+                                      : notice.severity === "warning"
+                                        ? "text-yellow-400"
+                                        : "text-blue-400"
+                                  }`}
+                                >
+                                  {notice.severity === "critical" ? "CRITIQUE" : ""}
+                                  {notice.severity === "warning" ? "AVERTISSEMENT" : ""}
+                                  {notice.severity === "info" ? "INFO" : ""}
+                                </p>
+                              </div>
+                              <button
+                                onClick={() => handleEndMaintenance(notice.id)}
+                                className="ml-2 text-xs px-2 py-1 rounded bg-white/10 hover:bg-white/20 text-foreground/70 hover:text-foreground transition-colors"
+                              >
+                                Terminer
+                              </button>
+                            </div>
+                          </div>
+                        ))
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
