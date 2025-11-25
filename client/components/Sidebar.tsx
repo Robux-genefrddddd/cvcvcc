@@ -169,6 +169,20 @@ export function Sidebar({ isOpen = true, onClose }: SidebarProps) {
                   >
                     Aide
                   </button>
+                  {userData?.isAdmin && (
+                    <>
+                      <div className="h-px bg-white/10 my-1" />
+                      <button
+                        onClick={() => {
+                          navigate("/admin");
+                          setIsMenuOpen(false);
+                        }}
+                        className="w-full text-left px-3 py-2 rounded-lg text-sm text-white font-semibold hover:bg-white/10 transition-colors"
+                      >
+                        Panneau Admin
+                      </button>
+                    </>
+                  )}
                 </div>
               </PopoverContent>
             </Popover>
