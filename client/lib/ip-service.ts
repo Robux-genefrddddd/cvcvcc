@@ -243,6 +243,11 @@ export class IPService {
   }
 
   static async checkIPBan(ipAddress: string): Promise<IPBan | null> {
+    if (!ipAddress) {
+      console.warn("checkIPBan called with undefined ipAddress");
+      return null;
+    }
+
     try {
       const q = query(
         collection(db, "ip_bans"),
