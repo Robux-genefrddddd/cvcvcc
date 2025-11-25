@@ -22,6 +22,9 @@ import {
   Copy,
   Trash2,
   Brain,
+  Shield,
+  AlertCircle,
+  Clock,
 } from "lucide-react";
 import { toast } from "sonner";
 import { UserData, PlanType } from "@/contexts/AuthContext";
