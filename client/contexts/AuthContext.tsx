@@ -39,25 +39,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const refreshUserData = async (uid: string) => {
-    try {
-      const userDocRef = doc(db, "users", uid);
-      const userDocSnap = await getDoc(userDocRef);
-      if (userDocSnap.exists()) {
-        setUserData(userDocSnap.data() as UserData);
-      }
-    } catch (err) {
-      console.error("Error refreshing user data:", err);
-    }
-  };
-
   useEffect(() => {
+    let isMounted = true;
+
     const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
       try {
+        if (!isMounted) return;
+
         if (authUser) {
           setUser(authUser);
           const userDocRef = doc(db, "users", authUser.uid);
           const userDocSnap = await getDoc(userDocRef);
+
+          if (!isMounted) return;
 
           if (userDocSnap.exists()) {
             setUserData(userDocSnap.data() as UserData);
@@ -80,23 +74,54 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUserData(null);
         }
       } catch (err) {
+        if (!isMounted) return;
         setError(err instanceof Error ? err.message : "Auth error");
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     });
 
-    return unsubscribe;
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
   }, []);
 
   useEffect(() => {
     if (!user) return;
 
-    const interval = setInterval(() => {
-      refreshUserData(user.uid);
-    }, 5000);
+    let isMounted = true;
+    let timeoutId: NodeJS.Timeout;
 
-    return () => clearInterval(interval);
+    const refreshUserData = async () => {
+      if (!isMounted) return;
+
+      try {
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+
+        if (isMounted && userDocSnap.exists()) {
+          setUserData(userDocSnap.data() as UserData);
+        }
+      } catch (err) {
+        if (isMounted) {
+          console.error("Error refreshing user data:", err);
+        }
+      }
+
+      if (isMounted) {
+        timeoutId = setTimeout(refreshUserData, 5000);
+      }
+    };
+
+    timeoutId = setTimeout(refreshUserData, 5000);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timeoutId);
+    };
   }, [user]);
 
   return (
