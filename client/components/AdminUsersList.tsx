@@ -55,13 +55,17 @@ export default function AdminUsersList({
     try {
       const usersRef = collection(db, "users");
       const snapshot = await getDocs(usersRef);
-      const usersList = snapshot.docs.map((doc) => doc.data() as UserData);
+      const usersList = snapshot.docs
+        .map((doc) => doc.data() as UserData)
+        .filter((user) => user && user.uid);
 
       // Load IP information for each user
       const ipsMap: Record<string, UserIP[]> = {};
       for (const user of usersList) {
-        const ips = await IPService.getUserIPs(user.uid);
-        ipsMap[user.uid] = ips;
+        if (user.uid) {
+          const ips = await IPService.getUserIPs(user.uid);
+          ipsMap[user.uid] = ips;
+        }
       }
       setUserIPs(ipsMap);
       setUsers(usersList);
