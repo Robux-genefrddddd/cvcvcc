@@ -133,6 +133,7 @@ export default function AdminBanManagement({ users }: AdminBanManagementProps) {
       toast.success("Adresse IP débanni");
       await loadBans();
     } catch (error) {
+      console.error("Error in handleUnbanIP:", error);
       toast.error("Erreur lors du déban IP");
     }
   };
