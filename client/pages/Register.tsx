@@ -4,8 +4,9 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 import { PlanType, UserData } from "@/contexts/AuthContext";
-import { Mail, Lock, UserPlus, Key } from "lucide-react";
+import { Mail, Lock, UserPlus, Key, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
+import { IPService } from "@/lib/ip-service";
 
 export default function Register() {
   const [email, setEmail] = useState("");
