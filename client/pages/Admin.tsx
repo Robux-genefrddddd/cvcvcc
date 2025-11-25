@@ -205,6 +205,88 @@ export default function Admin() {
     }
   };
 
+  const handleBanUser = async () => {
+    if (!userEmailToBan || !banReason) {
+      toast.error("Entrez un email et une raison");
+      return;
+    }
+
+    setSavingBan(true);
+    try {
+      // Find user by email
+      const user = users.find((u) => u.email === userEmailToBan);
+      if (!user) {
+        toast.error("Utilisateur non trouvé");
+        return;
+      }
+
+      await SystemNoticesService.banUser(
+        user.uid,
+        user.email,
+        banReason,
+        banDuration || undefined,
+      );
+
+      toast.success("Utilisateur banni avec succès");
+      setUserEmailToBan("");
+      setBanReason("");
+      setBanDuration(null);
+      await loadBans();
+    } catch (error) {
+      toast.error("Erreur lors du ban");
+    } finally {
+      setSavingBan(false);
+    }
+  };
+
+  const handleUnbanUser = async (userId: string) => {
+    try {
+      await SystemNoticesService.unbanUser(userId);
+      toast.success("Utilisateur débanni");
+      await loadBans();
+    } catch (error) {
+      toast.error("Erreur lors du déban");
+    }
+  };
+
+  const handleCreateMaintenance = async () => {
+    if (!maintenanceTitle || !maintenanceMessage) {
+      toast.error("Entrez un titre et un message");
+      return;
+    }
+
+    setSavingMaintenance(true);
+    try {
+      await SystemNoticesService.createMaintenanceNotice(
+        maintenanceTitle,
+        maintenanceMessage,
+        maintenanceDuration,
+        maintenanceSeverity,
+      );
+
+      toast.success("Maintenance créée");
+      setMaintenanceTitle("");
+      setMaintenanceMessage("");
+      setMaintenanceDuration(30);
+      setMaintenanceSeverity("warning");
+      await loadMaintenance();
+    } catch (error) {
+      toast.error("Erreur lors de la création");
+    } finally {
+      setSavingMaintenance(false);
+    }
+  };
+
+  const handleEndMaintenance = async (noticeId: string) => {
+    try {
+      await SystemNoticesService.endMaintenance(noticeId);
+      toast.success("Maintenance terminée");
+      await loadMaintenance();
+    } catch (error) {
+      toast.error("Erreur lors de la terminaison");
+    }
+  };
+
   const handleLogout = async () => {
     try {
       await signOut(auth);
