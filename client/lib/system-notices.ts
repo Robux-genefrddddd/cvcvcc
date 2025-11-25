@@ -71,21 +71,23 @@ export class SystemNoticesService {
   ): Promise<void> {
     const banRef = doc(collection(db, "bans"));
     const bannedAt = Timestamp.now();
-    const expiresAt = durationMinutes
-      ? Timestamp.fromDate(
-          new Date(bannedAt.toDate().getTime() + durationMinutes * 60000),
-        )
-      : undefined;
 
-    await setDoc(banRef, {
+    const warnData: any = {
       userId,
       email,
       reason,
       bannedAt,
-      expiresAt,
       isPermanent: !durationMinutes,
       type: "warn",
-    } as UserBan);
+    };
+
+    if (durationMinutes) {
+      warnData.expiresAt = Timestamp.fromDate(
+        new Date(bannedAt.toDate().getTime() + durationMinutes * 60000),
+      );
+    }
+
+    await setDoc(banRef, warnData as UserBan);
   }
 
   static async unbanUser(userId: string): Promise<void> {
