@@ -238,6 +238,19 @@ export default function Admin() {
                 Clés de licence
               </div>
             </button>
+            <button
+              onClick={() => setActiveTab("ai")}
+              className={`py-4 px-2 border-b-2 transition-all ${
+                activeTab === "ai"
+                  ? "border-white text-white"
+                  : "border-transparent text-foreground/60 hover:text-foreground"
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <Brain size={18} />
+                Configuration IA
+              </div>
+            </button>
           </div>
         </div>
       </div>
