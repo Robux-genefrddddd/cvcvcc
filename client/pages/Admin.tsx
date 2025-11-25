@@ -21,6 +21,7 @@ import {
   Key,
   Copy,
   Trash2,
+  Brain,
 } from "lucide-react";
 import { toast } from "sonner";
 import { UserData, PlanType } from "@/contexts/AuthContext";
@@ -30,6 +31,7 @@ import {
   deactivateLicense,
   LicenseKey,
 } from "@/lib/licenses";
+import { AIService, AIConfig } from "@/lib/ai";
 
 export default function Admin() {
   const { userData } = useAuth();
