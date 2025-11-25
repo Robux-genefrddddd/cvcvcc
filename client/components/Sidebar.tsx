@@ -134,42 +134,61 @@ export function Sidebar({
   const handleSyncMessages = async () => {
     setIsSyncing(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await loadConversations();
       toast.success("Messages synchronisés");
     } catch (error) {
+      console.error("Error syncing conversations:", error);
       toast.error("Erreur de synchronisation");
     } finally {
       setIsSyncing(false);
     }
   };
 
-  const handleDeleteConversation = (id: number) => {
+  const handleDeleteConversation = async (id: string) => {
     setConversations(
       conversations.map((c) => (c.id === id ? { ...c, isDeleting: true } : c)),
     );
-    setTimeout(() => {
-      setConversations((prev) => prev.filter((c) => c.id !== id));
-      setEditingId(null);
+    setTimeout(async () => {
+      try {
+        await MessagesService.deleteConversation(id);
+        setConversations((prev) => prev.filter((c) => c.id !== id));
+        setEditingId(null);
+        toast.success("Conversation supprimée");
+      } catch (error) {
+        console.error("Error deleting conversation:", error);
+        toast.error("Erreur lors de la suppression");
+        await loadConversations();
+      }
     }, 300);
   };
 
-  const handleEditConversation = (id: number, currentName: string) => {
+  const handleEditConversation = (id: string, currentName: string) => {
     setEditingId(id);
     setEditName(currentName);
     setIsDialogOpen(true);
   };
 
-  const handleSaveEdit = () => {
-    if (editingId && editName.trim()) {
+  const handleSaveEdit = async () => {
+    if (!editingId || !editName.trim()) return;
+
+    try {
+      await MessagesService.updateConversation(editingId, {
+        title: editName,
+      });
       setConversations(
         conversations.map((c) =>
           c.id === editingId ? { ...c, name: editName } : c,
         ),
       );
+      toast.success("Conversation mise à jour");
+    } catch (error) {
+      console.error("Error updating conversation:", error);
+      toast.error("Erreur lors de la mise à jour");
+    } finally {
+      setIsDialogOpen(false);
+      setEditingId(null);
+      setEditName("");
     }
-    setIsDialogOpen(false);
-    setEditingId(null);
-    setEditName("");
   };
 
   return (
