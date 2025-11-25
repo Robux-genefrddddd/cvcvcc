@@ -87,8 +87,18 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
 
     // Check message limit
     if (userData.messagesUsed >= userData.messagesLimit) {
-      toast.error("Limite de messages atteinte. Améliorez votre plan.");
+      toast.error(
+        "Limite de messages atteinte. Vous serez redirigé pour activer une licence.",
+      );
       return;
+    }
+
+    // Warn when getting close to limit (90%)
+    const percentUsed = (userData.messagesUsed / userData.messagesLimit) * 100;
+    if (percentUsed >= 90) {
+      toast.warning(
+        `Attention: ${userData.messagesLimit - userData.messagesUsed} messages restants`,
+      );
     }
 
     const userMessageText = message;
