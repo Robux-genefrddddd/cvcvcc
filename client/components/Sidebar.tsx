@@ -33,18 +33,22 @@ interface SidebarProps {
 }
 
 export function Sidebar({ isOpen = true, onClose }: SidebarProps) {
+  const { user, userData, loading } = useAuth();
+  const navigate = useNavigate();
   const [conversations, setConversations] = useState<Conversation[]>([
     { id: 1, name: "Nouvelle conversation", active: true },
   ]);
-  const [messagesUsed] = useState(7);
-  const [messagesLimit] = useState(15);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editName, setEditName] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
-  const [currentPlan] = useState<PlanType>("Pro");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  const userInitial = userData?.displayName?.[0]?.toUpperCase() || "U";
+  const messagesUsed = userData?.messagesUsed || 0;
+  const messagesLimit = userData?.messagesLimit || 10;
 
   const handleNewConversation = () => {
     const newId = Math.max(...conversations.map((c) => c.id), 0) + 1;
