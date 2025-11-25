@@ -25,6 +25,7 @@ import {
   Shield,
   AlertCircle,
   Clock,
+  BarChart3,
 } from "lucide-react";
 import { toast } from "sonner";
 import { UserData, PlanType } from "@/contexts/AuthContext";
@@ -40,6 +41,8 @@ import {
   UserBan,
   MaintenanceNotice,
 } from "@/lib/system-notices";
+import AdminUsersList from "@/components/AdminUsersList";
+import AdminBanManagement from "@/components/AdminBanManagement";
 
 export default function Admin() {
   const { userData } = useAuth();
