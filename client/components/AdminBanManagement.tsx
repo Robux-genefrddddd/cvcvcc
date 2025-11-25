@@ -129,7 +129,8 @@ export default function AdminBanManagement({ users }: AdminBanManagementProps) {
       await loadBans();
     } catch (error) {
       console.error("Error in handleBanIP:", error);
-      toast.error("Erreur lors du ban IP");
+      const errorMessage = error instanceof Error ? error.message : "Erreur lors du ban IP";
+      toast.error(errorMessage);
     } finally {
       setSavingIPBan(false);
     }
