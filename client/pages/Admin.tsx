@@ -154,6 +154,20 @@ export default function Admin() {
     }
   };
 
+  const handleSaveAiConfig = async () => {
+    if (!aiConfig) return;
+
+    setSavingAiConfig(true);
+    try {
+      await AIService.updateConfig(aiConfig);
+      toast.success("Configuration IA mise à jour");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Erreur lors de la sauvegarde");
+    } finally {
+      setSavingAiConfig(false);
+    }
+  };
+
   const handleLogout = async () => {
     try {
       await signOut(auth);
