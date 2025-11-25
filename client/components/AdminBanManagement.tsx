@@ -104,7 +104,8 @@ export default function AdminBanManagement({ users }: AdminBanManagementProps) {
       await loadBans();
     } catch (error) {
       console.error("Error in handleUnbanUser:", error);
-      toast.error("Erreur lors du déban");
+      const errorMessage = error instanceof Error ? error.message : "Erreur lors du déban";
+      toast.error(errorMessage);
     }
   };
 
