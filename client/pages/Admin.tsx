@@ -817,7 +817,8 @@ export default function Admin() {
                 {/* Active Maintenance */}
                 <div>
                   <h4 className="text-sm font-semibold text-white mb-4">
-                    Maintenances actives ({maintenanceNotices.filter((n) => n.isActive).length})
+                    Maintenances actives (
+                    {maintenanceNotices.filter((n) => n.isActive).length})
                   </h4>
                   <div className="space-y-2 max-h-64 overflow-y-auto">
                     {maintenanceNotices.filter((n) => n.isActive).length ===

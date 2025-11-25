@@ -1,18 +1,7 @@
 import { useState, useEffect } from "react";
-import {
-  collection,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import {
-  AlertCircle,
-  Trash2,
-  Clock,
-  User,
-  MessageSquare,
-} from "lucide-react";
+import { AlertCircle, Trash2, Clock, User, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
 import { UserData } from "@/contexts/AuthContext";
 import { SystemNoticesService, UserBan } from "@/lib/system-notices";
@@ -189,7 +178,9 @@ export default function AdminBanManagement({ users }: AdminBanManagementProps) {
           <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
             <AlertCircle
               size={20}
-              className={actionType === "ban" ? "text-red-500" : "text-yellow-500"}
+              className={
+                actionType === "ban" ? "text-red-500" : "text-yellow-500"
+              }
             />
             {actionType === "ban" ? "Bannir" : "Avertir"} un utilisateur
           </h3>
@@ -382,9 +373,7 @@ export default function AdminBanManagement({ users }: AdminBanManagementProps) {
           </h4>
           <div className="space-y-2 max-h-96 overflow-y-auto">
             {warns.length === 0 ? (
-              <p className="text-xs text-foreground/50">
-                Aucun avertissement
-              </p>
+              <p className="text-xs text-foreground/50">Aucun avertissement</p>
             ) : (
               warns.map((warn) => (
                 <div

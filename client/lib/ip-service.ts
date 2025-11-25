@@ -109,7 +109,9 @@ export class IPService {
     ipAddress: string,
   ): Promise<void> {
     if (!userId || !ipAddress) {
-      console.warn("updateUserIPLogin called with undefined userId or ipAddress");
+      console.warn(
+        "updateUserIPLogin called with undefined userId or ipAddress",
+      );
       return;
     }
 
