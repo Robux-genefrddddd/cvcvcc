@@ -46,7 +46,7 @@ export function Sidebar({ isOpen = true, onClose }: SidebarProps) {
 
         {/* New Conversation Button */}
         <div className="px-4 py-2 animate-fadeIn" style={{ animationDelay: "0.1s" }}>
-          <button className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-foreground/30 text-foreground hover:border-foreground/60 hover:bg-foreground/5 transition-all text-sm font-medium rounded-2xl hover:scale-105 transform">
+          <button className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-white text-foreground hover:border-white hover:bg-white/10 transition-all text-sm font-medium rounded-2xl hover:scale-105 transform">
             <Plus size={16} />
             New chat
           </button>
@@ -58,10 +58,10 @@ export function Sidebar({ isOpen = true, onClose }: SidebarProps) {
             {conversations.map((conv, idx) => (
               <button
                 key={conv.id}
-                className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all border-2 border-transparent hover:border-foreground/30 ${
+                className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all border-2 ${
                   conv.active
-                    ? "bg-foreground/10 text-foreground border-foreground/30"
-                    : "text-foreground/70 hover:text-foreground hover:bg-foreground/5"
+                    ? "bg-white/5 text-foreground border-white"
+                    : "text-foreground/70 hover:text-foreground hover:bg-foreground/5 border-transparent hover:border-white/50"
                 }`}
                 style={{ animationDelay: `${0.2 + idx * 0.05}s` }}
               >
@@ -72,8 +72,8 @@ export function Sidebar({ isOpen = true, onClose }: SidebarProps) {
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t-2 border-foreground/20 animate-fadeIn" style={{ animationDelay: "0.3s" }}>
-          <button className="w-full flex items-center justify-center gap-2 px-4 py-3 text-white bg-red-600 hover:bg-red-700 border-2 border-red-600 hover:border-red-700 transition-all text-sm font-medium rounded-2xl hover:scale-105 transform">
+        <div className="p-4 border-t-2 border-white/10 animate-fadeIn" style={{ animationDelay: "0.3s" }}>
+          <button className="w-full flex items-center justify-center gap-2 px-4 py-3 text-foreground/70 hover:text-foreground border-2 border-white/20 hover:border-white/40 hover:bg-white/5 transition-all text-sm font-medium rounded-2xl hover:scale-105 transform">
             <LogOut size={16} />
             <span className="hidden sm:inline">Sign out</span>
           </button>
